@@ -3,8 +3,7 @@ import QtQuick.Window 2.12
 import QtQuick.Dialogs 1.2
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
-import Qt.labs.platform 1.1
-
+//import Qt.labs.platform 1.1
 import ls.sierra_kilo_alpha.CsvWriter 1.0
 
 Window {
@@ -18,32 +17,134 @@ Window {
 
     CSVFileWriter {
         id: csv
-        onEnabledReadSpiIDChanged: checkBoxSpiRID.checked = value
-        onEnabledSpiRWChanged: checkBoxCollFlashSpiRW.checked = value
+        onEnabledReadSpiIDChanged:  checkBoxSpiRID.checked = value
+        onEnabledSpiRWChanged:      checkBoxCollFlashSpiRW.checked = value
         onEnabledReadQSpiIDChanged: checkBoxQSpiRID.checked = value
-        onEnabledQSpiRWChanged: checkBoxCollFlashQSpiRW.checked = value
-        onEnabledDisplayChanged: checkBoxCollDisplayTouch.checked = value
-        onEnabledBacklightChanged: checkBoxCollBacklight.checked = value
-        onEnabledBuzzEstChanged: checkBoxCollBuzzerEsterno.checked = value
-        onEnabledBuzzIntChanged: checkBoxCollBuzzerInterno.checked = value
-        onEnabledEncoderChanged: checkBoxCollEncoder.checked = value
-        onEnabledDipSwitchChanged: checkBoxDipSwitch.checked = value
-        onEnabledCpuChanged: checkBoxCPU.checked = value
-        onEnabledFlashChanged: checkBoxFlash.checked = value
-        onEnabledSDChanged: checkBoxCollSD.checked = value
-        onEnabledETHChanged:checkBoxCollEthernet.checked = value
-        onEnabledWifiChanged:checkBoxWifi.checked = value
-        onEnabledModBusChanged: checkBoxCollModbus.checked = value
-        onEnabledModBus2Changed: checkBoxCollModbus2.checked = value
-        onEnabledCanBusChanged: checkBoxCollCan.checked = value
-        onEnabledEcsBusChanged: checkBoxCollECSBus.checked = value
-        onEnabledNtcChanged: checkBoxCollNtc.checked = value
-        onEnabledAnalogChanged: checkBoxCollAnalogiche.checked = value
-        onEnabledI2CEEChanged: checkBoxCollI2CEEprom.checked = value
-        onEnabledEthNtpChanged: checkBoxCollNtpEth.checked = value
-        onEnabledEthMacChanged: checkBoxCollWriteMac.checked = value
-        onEnabledUsbChanged: checkBoxCollUsb.checked = value
-        onEnabledFinalizeChanged: checkBoxFinalize.checked = value
+        onEnabledQSpiRWChanged:     checkBoxCollFlashQSpiRW.checked = value
+        onEnabledDisplayChanged:    checkBoxCollDisplayTouch.checked = value
+        onEnabledBacklightChanged:  checkBoxCollBacklight.checked = value
+        onEnabledBuzzEstChanged:    checkBoxCollBuzzerEsterno.checked = value
+        onEnabledBuzzIntChanged:    checkBoxCollBuzzerInterno.checked = value
+        onEnabledEncoderChanged:    checkBoxCollEncoder.checked = value
+        onEnabledDipSwitchChanged:  checkBoxDipSwitch.checked = value
+        onEnabledCpuChanged:        checkBoxCPU.checked = value
+        onEnabledFlashChanged:      checkBoxFlash.checked = value
+        onEnabledSDChanged:         checkBoxCollSD.checked = value
+        onEnabledETHChanged:        checkBoxCollEthernet.checked = value
+        onEnabledWifiChanged:       checkBoxWifi.checked = value
+        onEnabledModBusChanged:     checkBoxCollModbus.checked = value
+        onEnabledModBus2Changed:    checkBoxCollModbus2.checked = value
+        onEnabledCanBusChanged:     checkBoxCollCan.checked = value
+        onEnabledEcsBusChanged:     checkBoxCollECSBus.checked = value
+        onEnabledNtcChanged:        checkBoxCollNtc.checked = value
+        onEnabledAnalogChanged:     checkBoxCollAnalogiche.checked = value
+        onEnabledRtcVbatChanged:    checkBoxRtcVbat.checked = value
+        onEnabledI2CEEChanged:      checkBoxCollI2CEEprom.checked = value
+        onEnabledEthNtpChanged:     checkBoxCollNtpEth.checked = value
+        onEnabledEthMacChanged:     checkBoxCollWriteMac.checked = value
+        onEnabledUsbChanged:        checkBoxCollUsb.checked = value
+        onEnabledFinalizeChanged:   checkBoxFinalize.checked = value
+        onStartDataChanged: {
+            console.log( value);
+            var res = value.split(",");
+            if(res[0])
+                textCustomer.text = res[0].trim()
+            if(res[1])
+                textCode.text = res[1].trim()
+        }
+        onCodeSpiIDChanged: {
+            console.log("codeSpiIDChanged changed: ", value)
+            var res = value.split(",");
+            if(res[0])
+                textSPIFlashId0.text = res[0].trim()
+            if(res[1])
+                textSPIFlashId1.text = res[1].trim()
+            if(res[2])
+                textSPIFlashId2.text = res[2].trim()
+            if(res[3])
+                textSPIFlashId3.text = res[3].trim()
+            if(res[4])
+                textSPIFlashId4.text = res[4].trim()
+        }
+        onCodeQSpiIDChanged: {
+            console.log("onCodeQSpiIDChanged changed: ", value)
+            var res = value.split(",");
+            if(res[0])
+                textQSPIFlashId0.text = res[0].trim()
+            if(res[1])
+                textQSPIFlashId1.text = res[1].trim()
+            if(res[2])
+                textQSPIFlashId2.text = res[2].trim()
+            if(res[3])
+                textQSPIFlashId3.text = res[3].trim()
+            if(res[4])
+                textQSPIFlashId4.text = res[4].trim()
+        }
+        onMaskDipSwitchChanged: {
+            console.log("onMaskDipSwitchChanged changed: ", value)
+            var res = value.split(",");
+            if(res[0])
+                checkBoxDipSwitchEn0.checked = (res[0].trim() == '1' ? true : false)
+            if(res[1])
+                checkBoxDipSwitchEn1.checked = (res[1].trim() == '1' ? true : false)
+            if(res[2])
+                checkBoxDipSwitchEn2.checked = (res[2].trim() == '1' ? true : false)
+            if(res[3])
+                checkBoxDipSwitchEn3.checked = (res[3].trim() == '1' ? true : false)
+        }
+        onMaskCpuChanged: {
+            console.log("onMaskCpuChanged changed: ", value)
+            var res = value.split(",");
+            if(res[0])
+                textCPUId0.text = res[0].trim()
+            if(res[1])
+                textCPUId1.text = res[1].trim()
+            if(res[2])
+                textCPUId2.text = res[2].trim()
+            if(res[3])
+                textCPUId3.text = res[3].trim()
+            if(res[4])
+                textCPUId4.text = res[4].trim()
+        }
+        onMaskFlashChanged: {
+            console.log("onMaskFlashChanged changed: ", value)
+            var res = value.split(",");
+            if(res[0])
+                textFlashSz0.text = res[0].trim()
+            if(res[1])
+                textFlashSz1.text = res[1].trim()
+            if(res[2])
+                textFlashSz2.text = res[2].trim()
+            if(res[3])
+                textFlashSz3.text = res[3].trim()
+            if(res[4])
+                textFlashSz4.text = res[4].trim()
+        }
+        onRtcVerDataChanged: {
+            console.log("onRtcVerDataChanged changed: ", value)
+            var res = value.split(",");
+            if(res[0])
+                textRtcVer.text = res[0].trim()
+            if(res[1])
+                textRtcVerOffset.text = res[1].trim()
+        }
+        onWifiDataChanged: {
+            console.log("onMaskFlashChanged changed: ", value)
+            var res = value.split(",");
+            if(res[0])
+                textSSID.text = res[0].trim()
+            if(res[1])
+                textPSK.text = res[1].trim()
+            //if(res[2])
+            //    textFlashSz2.text = res[2].trim()
+        }
+        onCloudDataChanged: {
+            console.log("onCloudDataChanged changed: ", value)
+            var res = value.split(",");
+            if(res[0])
+                textCollWriteCloud.text = res[0].trim()
+        }
+
     }
 
     Rectangle {
@@ -496,10 +597,7 @@ Window {
             font.bold: true
             checked: false
             enabled: true
-            onCheckedChanged: {
-                console.log("onCheckedChanged DIP_SWITCH")
-                csv.enabledDipSwitch = this.checked
-            }
+            onCheckedChanged: csv.enabledDipSwitch = this.checked
         }
 
         CheckBox {
@@ -583,10 +681,7 @@ Window {
             font.bold: true
             checked: false
             enabled: true
-            onCheckedChanged: {
-                console.log("onCheckedChanged COLLAUDO_CPU")
-                csv.enabledCpu = this.checked
-            }
+            onCheckedChanged: csv.enabledCpu = this.checked
         }
 
         Label {
@@ -770,10 +865,7 @@ Window {
             font.bold: true
             checked: false
             enabled: true
-            onCheckedChanged: {
-                console.log("onCheckedChanged COLLAUDO_FLASH")
-                csv.enabledFlash = this.checked
-            }
+            onCheckedChanged: csv.enabledFlash = this.checked
         }
 
         Label {
@@ -957,6 +1049,7 @@ Window {
             checked: false
             font.bold: true
             enabled: true
+            onCheckedChanged: csv.enabledWifi = this.checked
         }
 
         Label {
@@ -1390,7 +1483,7 @@ Window {
         border.color: "#735dfc"
         border.width: 2
         CheckBox {
-            id: checkBoxRtcVbat1
+            id: checkCollWriteCloud
             x: 8
             y: 8
             width: 262
@@ -1399,10 +1492,24 @@ Window {
             checked: false
             font.bold: true
             enabled: true
+            onCheckedChanged: csv.enabledCloud = this.checked
+        }
+
+        Label {
+            id: labelCollWriteCloud
+            x: 290
+            y: 11
+            width: 155
+            height: 26
+            text: qsTr("MATRICOLA_DEFAULT")
+            horizontalAlignment: Text.AlignLeft
+            verticalAlignment: Text.AlignVCenter
+            font.pointSize: 9
+            font.family: "Helvetica"
         }
 
         TextField {
-            id: textCustomer3
+            id: textCollWriteCloud
             x: 451
             y: 11
             width: 120
@@ -1414,19 +1521,35 @@ Window {
             placeholderText: "0xCAFE"
         }
 
-        Label {
-            id: labelCustomer4
-            x: 290
-            y: 11
-            width: 155
-            height: 26
-            text: qsTr("MATRICOLA_DEFAULT")
-            horizontalAlignment: Text.AlignLeft
-            verticalAlignment: Text.AlignVCenter
-            font.pointSize: 9
-            font.family: "Helvetica"
+    }
+
+    Rectangle {
+        id: rectCollFinalize
+        x: 908
+        y: 637
+        width: 280
+        height: 55
+        color: "#f9c36c"
+        radius: 3
+        border.color: "#735dfc"
+        border.width: 2
+        CheckBox {
+            id: checkBoxFinalize
+            x: 8
+            y: 8
+            width: 262
+            height: 32
+            text: "COLLAUDO_FINALIZE"
+            font.pointSize: 10
+            checked: false
+            font.bold: true
+            enabled: true
+            onCheckedChanged: csv.enabledFinalize = this.checked
         }
     }
+
+
+
 
     Rectangle {
         id: rectCollFlashSpiPrg
@@ -1711,29 +1834,7 @@ Window {
         }
     }
 
-    Rectangle {
-        id: rectCollFinalize
-        x: 908
-        y: 637
-        width: 280
-        height: 55
-        color: "#f9c36c"
-        radius: 3
-        border.color: "#735dfc"
-        border.width: 2
-        CheckBox {
-            id: checkBoxFinalize
-            x: 8
-            y: 8
-            width: 262
-            height: 32
-            text: "COLLAUDO_FINALIZE"
-            font.pointSize: 10
-            checked: false
-            font.bold: true
-            enabled: true
-        }
-    }
+
 
 
 
@@ -1754,25 +1855,32 @@ Window {
         width: 117
         height: 40
         text: qsTr("Open CSV file")
-        onReleased: csv.pluto = "file path"
+        //onReleased: csv.pluto = "file path"
+        onClicked: fileDialog.visible = true
     }
 
 
     Item {
-        FolderDialog {
-            id: folderDialog
-            title: "Please choose output folder"
-            //currentFolder: viewer.folder
-            folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
-            Component.onCompleted: visible = false
+
+        FileDialog {
+            id: fileDialog
+            title: "Please choose a file"
+            //folder: StandardPaths.writableLocation(StandardPaths.HomeLocation)
+            folder: shortcuts.home
+            nameFilters: [ "Test File (*.csv)", "All files (*)" ]
 
             onAccepted: {
-                console.log("fileDialog.fileUrls: " + folderDialog.folder)
+                console.log("fileDialog.fileUrls: " + fileDialog.fileUrls)
+                //fileLabel.text = ""+ fileDialog.fileUrls
+                csv.pluto = "" + fileDialog.fileUrls
+                fileDialog.visible= false
             }
             onRejected: {
                 console.log("Canceled")
             }
+            Component.onCompleted: visible = false
         }
+
     }
 
 

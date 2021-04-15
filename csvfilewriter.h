@@ -48,7 +48,7 @@ enum {
 typedef struct {
     QString test_name;
     bool    *test_en_var;
-    QString test_params;
+    QStringList *test_params;
 } test_t;
 
 //static test_t m_test[COLLAUDO_END_TESTS];
@@ -61,7 +61,7 @@ class CSVFileWriter: public QObject
     Q_PROPERTY(QString pluto WRITE openFile)
 
     /* COLLAUDO_START */
-    Q_PROPERTY(QString startData WRITE setStartData)
+    Q_PROPERTY(QString startData READ getStartData WRITE setStartData)
     /* COLLAUDO_FLASH_SPI_RID */
     Q_PROPERTY(bool enabledReadSpiID MEMBER m_enabledReadSpiID)
     Q_PROPERTY(QString codeSpiID  READ getCodeSpiID  WRITE setCodeSpiID NOTIFY codeSpiIDChanged)
@@ -111,6 +111,8 @@ class CSVFileWriter: public QObject
     /* COLLAUDO_ANALOGICHE */
     Q_PROPERTY(bool enabledAnalog MEMBER m_enabledAnalog)
     /* COLLAUDO_RTC_VBAT */
+    Q_PROPERTY(bool enabledRtcVbat MEMBER m_enabledRtcVbat)
+    Q_PROPERTY(QString rtcVerData READ getRtcVerData WRITE setRtcVerData NOTIFY rtcVerDataChanged)
     /* COLLAUDO_I2C_EEPROM */
     Q_PROPERTY(bool enabledI2CEE MEMBER m_enabledI2CEE)
     /* COLLAUDO_SET_DATE_FROM_NTP_ETH */
@@ -118,6 +120,8 @@ class CSVFileWriter: public QObject
     /* COLLAUDO_WRITE_MAC */
     Q_PROPERTY(bool enabledEthMac MEMBER m_enabledEthMac)
     /* COLLAUDO_WRITE_CLOUD */
+    Q_PROPERTY(bool enabledCloud MEMBER m_enabledCloud)
+    Q_PROPERTY(QString cloudData READ getCloudData WRITE setCloudData NOTIFY cloudDataChanged)
     /* COLLAUDO_USB */
     Q_PROPERTY(bool enabledUsb MEMBER m_enabledUsb)
     /* COLLAUDO_FLASH_QSPI_PRG */
@@ -127,13 +131,15 @@ class CSVFileWriter: public QObject
     /* COLLAUDO_FINALIZE */
     Q_PROPERTY(bool enabledFinalize MEMBER m_enabledFinalize)
 
+private:
+    QString parseTestParams(quint16 index, const bool commaFill = false);
+
 public:
     CSVFileWriter(QObject *parent = nullptr);
     void generateFile(const QString &outpath);
     void openFile(const QString &outpath);
-
     void setStartData(const QString &value);
-
+    QString getStartData();
     void setCodeSpiID(const QString &value);
     QString getCodeSpiID();
     void setEnabledReadQSpiID(const bool value);
@@ -146,14 +152,22 @@ public:
     QString getMaskFlash();
     void setMaskFlash(const QString &value);
     QString getWifiData();
-    void setWifiData(const QString &value);
+    void setWifiData(const QString &value);        
+    QString getRtcVerData();
+    void setRtcVerData(const QString &value);
+    QString getCloudData();
+    void setCloudData(const QString &value);
+
+
 
 signals:
+    void startDataChanged(QString value);
+
     void enabledReadSpiIDChanged(bool value);
-    void codeSpiIDChanged();
+    void codeSpiIDChanged(QString value);
     void enabledSpiRWChanged(bool value);
     void enabledReadQSpiIDChanged(bool value);
-    void codeQSpiIDChanged();
+    void codeQSpiIDChanged(QString value);
     void enabledQSpiRWChanged(bool value);
     void enabledDisplayChanged(bool value);
     void enabledBacklightChanged(bool value);
@@ -161,30 +175,35 @@ signals:
     void enabledBuzzIntChanged(bool value);
     void enabledEncoderChanged(bool value);
     void enabledDipSwitchChanged(bool value);
-    void maskDipSwitchChanged();
+    void maskDipSwitchChanged(QString value);
     void enabledCpuChanged(bool value);
-    void maskCpuChanged();
+    void maskCpuChanged(QString value);
     void enabledFlashChanged(bool value);
-    void maskFlashChanged();
+    void maskFlashChanged(QString value);
     void enabledSDChanged(bool value);
     void enabledETHChanged(bool value);
     void enabledWifiChanged(bool value);
-    void wifiDataChanged();
+    void wifiDataChanged(QString value);
     void enabledModBusChanged(bool value);
     void enabledModBus2Changed(bool value);
     void enabledCanBusChanged(bool value);
     void enabledEcsBusChanged(bool value);
     void enabledNtcChanged(bool value);
     void enabledAnalogChanged(bool value);
+    void enabledRtcVbatChanged(bool value);
+    void rtcVerDataChanged(QString value);
     void enabledI2CEEChanged(bool value);
     void enabledEthNtpChanged(bool value);
     void enabledEthMacChanged(bool value);
+    void enabledCloudChanged(bool value);
+    void cloudDataChanged(QString value);
     void enabledUsbChanged(bool value);
     void enabledFinalizeChanged(bool value);
 
 private:
     test_t m_test[COLLAUDO_END_TESTS];
 
+    bool m_enabledStart;
     bool m_enabledReadSpiID;
     bool m_enabledSpiRW;
     bool m_enabledReadQSpiID;
@@ -206,19 +225,23 @@ private:
     bool m_enabledEcsBus;
     bool m_enabledNtc;
     bool m_enabledAnalog;
+    bool m_enabledRtcVbat;
     bool m_enabledI2CEE;
     bool m_enabledEthNtp;
     bool m_enabledEthMac;
+    bool m_enabledCloud;
     bool m_enabledUsb;
     bool m_enabledFinalize;
 
-    QString startData[2];
+    QString m_startData[2];
     QString m_codeSpiID[5];
     QString m_codeQSpiID[5];
     QString m_maskDipSwitch[4];
     QString m_maskCpu[5];
     QString m_maskFlash[5];
     QString m_wifiData[3];
+    QString m_rtcVerData[2];
+    QString m_cloudData[1];
 };
 
 #endif // CSVFILEWRITER_H
