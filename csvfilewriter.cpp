@@ -1,36 +1,110 @@
 #include "csvfilewriter.h"
+#include <QHash>
 
 /*
  * CSVFileWriter::CSVFileWriter
  */
 CSVFileWriter::CSVFileWriter(QObject *parent) : QObject(parent)
 {
-    m_enabledReadSpiID = false;
-    m_enabledReadSpiID = false;
-    m_enabledSpiRW = false;
-    m_enabledReadQSpiID = false;
-    m_enabledQSpiRW = false;
-    m_enabledDisplay = false;
-    m_enabledBacklight = false;
-    m_enabledBuzzEst = false;
-    m_enabledBuzzInt = false;
-    m_enabledEncoder = false;
-    m_enabledDipSwitch = false;
-    m_enabledSD = false;
-    m_enabledETH = false;
-    m_enabledWifi = false;
-    m_enabledModBus = false;
-    m_enabledModBus2 = false;
-    m_enabledCanBus = false;
-    m_enabledEcsBus = false;
-    m_enabledNtc = false;
-    m_enabledAnalog = false;
-    m_enabledI2CEE = false;
-    m_enabledEthNtp = false;
-    m_enabledEthMac = false;
-    m_enabledUsb = false;
-    m_enabledFinalize = false;
+    m_enabledReadSpiID	= false;
+    m_enabledSpiRW		= false;
+    m_enabledReadQSpiID	= false;
+    m_enabledQSpiRW		= false;
+    m_enabledDisplay	= false;
+    m_enabledBacklight	= false;
+    m_enabledBuzzEst	= false;
+    m_enabledBuzzInt	= false;
+    m_enabledEncoder	= false;
+    m_enabledDipSwitch	= false;
+    m_enabledCpu		= false;
+    m_enabledFlash		= false;
+    m_enabledSD			= false;
+    m_enabledETH		= false;
+    m_enabledWifi		= false;
+    m_enabledModBus		= false;
+    m_enabledModBus2	= false;
+    m_enabledCanBus		= false;
+    m_enabledEcsBus		= false;
+    m_enabledNtc		= false;
+    m_enabledAnalog		= false;
+    m_enabledI2CEE		= false;
+    m_enabledEthNtp		= false;
+    m_enabledEthMac		= false;
+    m_enabledUsb		= false;
+    m_enabledFinalize	= false;
 
+    for(uint8_t i=0; i<COLLAUDO_END_TESTS; i++)
+    {
+        m_test[i].test_name = "";
+        m_test[i].test_en_var = NULL;
+        m_test[i].test_params = "";
+    }
+
+    m_test[COLLAUDO_FLASH_SPI_RID].test_en_var = &m_enabledReadSpiID;
+    m_test[COLLAUDO_FLASH_SPI_RW].test_en_var = &m_enabledSpiRW;
+    m_test[COLLAUDO_FLASH_QSPI_RID].test_en_var = &m_enabledReadQSpiID;
+    m_test[COLLAUDO_FLASH_QSPI_RW].test_en_var = &m_enabledQSpiRW;
+    m_test[COLLAUDO_DISPLAY_TOUCH].test_en_var = &m_enabledDisplay;
+    m_test[COLLAUDO_BACKLIGHT].test_en_var = &m_enabledBacklight;
+    m_test[COLLAUDO_BUZZER_ESTERNO].test_en_var = &m_enabledBuzzEst;
+    m_test[COLLAUDO_BUZZER_INTERNO].test_en_var = &m_enabledBuzzInt;
+    m_test[COLLAUDO_ENCODER].test_en_var = &m_enabledEncoder;
+    m_test[COLLAUDO_DIP_SWITCH].test_en_var = &m_enabledDipSwitch;
+    m_test[COLLAUDO_CPU].test_en_var = &m_enabledCpu;
+    m_test[COLLAUDO_FLASH].test_en_var = &m_enabledFlash;
+    m_test[COLLAUDO_SD].test_en_var = &m_enabledSD;
+    m_test[COLLAUDO_ETHERNET].test_en_var = &m_enabledETH;
+    m_test[COLLAUDO_WIFI].test_en_var = &m_enabledWifi;
+    m_test[COLLAUDO_MODBUS].test_en_var = &m_enabledModBus;
+    m_test[COLLAUDO_MODBUS2].test_en_var = &m_enabledModBus2;
+    m_test[COLLAUDO_CAN].test_en_var = &m_enabledCanBus;
+    m_test[COLLAUDO_ECSBUS].test_en_var = &m_enabledEcsBus;
+    m_test[COLLAUDO_NTC].test_en_var = &m_enabledNtc;
+    m_test[COLLAUDO_ANALOGICHE].test_en_var = &m_enabledAnalog;
+    m_test[COLLAUDO_I2C_EEPROM].test_en_var = &m_enabledI2CEE;
+    m_test[COLLAUDO_SET_DATE_FROM_NTP_ETH].test_en_var = &m_enabledEthNtp;
+    m_test[COLLAUDO_WRITE_MAC].test_en_var = &m_enabledEthMac;
+    m_test[COLLAUDO_USB].test_en_var = &m_enabledUsb;
+    m_test[COLLAUDO_FINALIZE].test_en_var = &m_enabledFinalize;
+
+    m_test[COLLAUDO_START].test_name = "COLLAUDO_START";
+    m_test[COLLAUDO_FLASH_SPI_RID].test_name = "COLLAUDO_FLASH_SPI_RID";
+    m_test[COLLAUDO_FLASH_SPI_RW].test_name = "COLLAUDO_FLASH_SPI_RW";
+    m_test[COLLAUDO_FLASH_QSPI_RID].test_name = "COLLAUDO_FLASH_QSPI_RID";
+    m_test[COLLAUDO_FLASH_QSPI_RW].test_name = "COLLAUDO_FLASH_QSPI_RW";
+    m_test[COLLAUDO_DISPLAY_TOUCH].test_name = "COLLAUDO_DISPLAY_TOUCH";
+    m_test[COLLAUDO_BACKLIGHT].test_name = "COLLAUDO_BACKLIGHT";
+    m_test[COLLAUDO_BUZZER_ESTERNO].test_name = "COLLAUDO_BUZZER_ESTERNO";
+    m_test[COLLAUDO_BUZZER_INTERNO].test_name = "COLLAUDO_BUZZER_INTERNO";
+    m_test[COLLAUDO_ENCODER].test_name = "COLLAUDO_ENCODER";
+    m_test[COLLAUDO_DIP_SWITCH].test_name = "COLLAUDO_DIP_SWITCH";
+    m_test[COLLAUDO_CPU].test_name = "COLLAUDO_CPU";
+    m_test[COLLAUDO_FLASH].test_name = "COLLAUDO_FLASH";
+    m_test[COLLAUDO_SD].test_name = "COLLAUDO_SD";
+    m_test[COLLAUDO_ETHERNET].test_name = "COLLAUDO_ETHERNET";
+    m_test[COLLAUDO_WIFI].test_name = "COLLAUDO_WIFI";
+    m_test[COLLAUDO_MODBUS].test_name = "COLLAUDO_MODBUS";
+    m_test[COLLAUDO_MODBUS2].test_name = "COLLAUDO_MODBUS2";
+    m_test[COLLAUDO_CAN].test_name = "COLLAUDO_CAN";
+    m_test[COLLAUDO_ECSBUS].test_name = "COLLAUDO_ECSBUS";
+    m_test[COLLAUDO_NTC].test_name = "COLLAUDO_NTC";
+    m_test[COLLAUDO_ANALOGICHE].test_name = "COLLAUDO_ANALOGICHE";
+    m_test[COLLAUDO_RTC_VBAT].test_name = "COLLAUDO_RTC_VBAT";
+    m_test[COLLAUDO_I2C_EEPROM].test_name = "COLLAUDO_I2C_EEPROM";
+    m_test[COLLAUDO_SET_DATE_FROM_NTP_ETH].test_name = "COLLAUDO_SET_DATE_FROM_NTP_ETH";
+    m_test[COLLAUDO_WRITE_MAC].test_name = "COLLAUDO_WRITE_MAC";
+    m_test[COLLAUDO_WRITE_CLOUD].test_name = "COLLAUDO_WRITE_CLOUD";
+    m_test[COLLAUDO_USB].test_name = "COLLAUDO_USB";
+    m_test[COLLAUDO_FLASH_QSPI_PRG].test_name = "COLLAUDO_FLASH_QSPI_PRG";
+    m_test[COLLAUDO_FLASH_QSPI_DEL].test_name = "COLLAUDO_FLASH_QSPI_DEL";
+    m_test[COLLAUDO_FLASH_SPI_WBIN].test_name = "COLLAUDO_FLASH_SPI_WBIN";
+    m_test[COLLAUDO_FLASH_SPI_DEL].test_name = "COLLAUDO_FLASH_SPI_DEL";
+    m_test[COLLAUDO_FINALIZE].test_name = "COLLAUDO_FINALIZE";
+
+    //const void *pfnSignal = nullptr;
+    //pfnSignal = SIGNAL(enabledReadSpiIDChanged());
+    //m_test[COLLAUDO_FLASH_SPI_RID].test_signal = &CSVFileWriter::enabledReadSpiIDChanged;
+    //m_test[COLLAUDO_FLASH_SPI_RID].pfnSignal = &CSVFileWriter::enabledReadSpiIDChanged;
 
 }
 
@@ -125,18 +199,108 @@ void CSVFileWriter::generateFile(const QString &outpath)
                 out << ", " << m_maskFlash[i];
         out << "\n";
     }
+
+    if(m_enabledSD)
+        out << "COLLAUDO_SD\n";
+    if(m_enabledETH)
+        out << "COLLAUDO_ETHERNET\n";
+    if(m_enabledWifi)
+        out << "COLLAUDO_WIFI\n";
+    if(m_enabledModBus)
+        out << "COLLAUDO_MODBUS\n";
+    if(m_enabledModBus2)
+        out << "COLLAUDO_MODBUS2\n";
+    if(m_enabledCanBus)
+        out << "COLLAUDO_CAN\n";
+    if(m_enabledEcsBus)
+        out << "COLLAUDO_ECSBUS\n";
+    if(m_enabledNtc)
+        out << "COLLAUDO_NTC\n";
+    if(m_enabledAnalog)
+        out << "COLLAUDO_ANALOGICHE\n";
+    if(m_enabledI2CEE)
+        out << "COLLAUDO_I2C_EEPROM\n";
+    if(m_enabledEthNtp)
+        out << "COLLAUDO_SET_DATE_FROM_NTP_ETH\n";
+    if(m_enabledEthMac)
+        out << "COLLAUDO_WRITE_MAC\n";
+    if(m_enabledUsb)
+        out << "COLLAUDO_USB\n";
+    if(m_enabledFinalize)
+        out << "COLLAUDO_FINALIZE\n";
+
     file.close();
 }
 
 void CSVFileWriter::openFile(const QString &outpath)
 {
     qDebug() << "OPEN FILE" << QSysInfo::machineHostName();
+
     QFile file("out.txt");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         return;
 
+    for(uint8_t i=0; i<COLLAUDO_END_TESTS; i++)
+        if(m_test[i].test_en_var)
+            *(m_test[i].test_en_var) = false;
+
+    QTextStream in(&file);
+    while(!in.atEnd())
+    {
+        QString testName;
+        QString testParams = "";
+        QString line = in.readLine();
+        if(line[0] == '#')
+            continue;
+
+        qDebug() << "line " << line;
+        QStringList fields = line.split(",");
+        testName = fields.takeFirst().trimmed();
+        if(fields.size())
+        {
+            qDebug() << "fields.size() " << fields.size();
+            testParams = fields.join(",");
+        }
+
+        for(uint8_t i=0; i<COLLAUDO_END_TESTS; i++)
+        {
+            if(m_test[i].test_name == testName)
+            {
+                if(m_test[i].test_en_var)
+                    *(m_test[i].test_en_var) = true;
+                m_test[i].test_params = testParams;
+            }
+        }
+    }
 
     file.close();
+    /* TODO: put this in struct */
+    emit enabledReadSpiIDChanged(m_enabledReadSpiID);
+    emit enabledSpiRWChanged(m_enabledSpiRW);
+    emit enabledReadQSpiIDChanged(m_enabledReadQSpiID);
+    emit enabledQSpiRWChanged(m_enabledQSpiRW);
+    emit enabledDisplayChanged(m_enabledDisplay);
+    emit enabledBacklightChanged(m_enabledBacklight);
+    emit enabledBuzzEstChanged(m_enabledBuzzEst);
+    emit enabledBuzzIntChanged(m_enabledBuzzInt);
+    emit enabledEncoderChanged(m_enabledEncoder);
+    emit enabledDipSwitchChanged(m_enabledDipSwitch);
+    emit enabledCpuChanged(m_enabledCpu);
+    emit enabledFlashChanged(m_enabledFlash);
+    emit enabledSDChanged(m_enabledSD);
+    emit enabledETHChanged(m_enabledETH);
+    emit enabledWifiChanged(m_enabledWifi);
+    emit enabledModBusChanged(m_enabledModBus);
+    emit enabledModBus2Changed(m_enabledModBus2);
+    emit enabledCanBusChanged(m_enabledCanBus);
+    emit enabledEcsBusChanged(m_enabledEcsBus);
+    emit enabledNtcChanged(m_enabledNtc);
+    emit enabledAnalogChanged(m_enabledAnalog);
+    emit enabledI2CEEChanged(m_enabledI2CEE);
+    emit enabledEthNtpChanged(m_enabledEthNtp);
+    emit enabledEthMacChanged(m_enabledEthMac);
+    emit enabledUsbChanged(m_enabledUsb);
+    emit enabledFinalizeChanged(m_enabledFinalize);
 }
 
 
@@ -155,27 +319,7 @@ void CSVFileWriter::setStartData(const QString &value)
  *****************************************************************************/
 
 /******************************************************************************
- **** CSVFileWriter::isEnabledReadSpiID
- */
-bool CSVFileWriter::isEnabledReadSpiID()
-{
-    return m_enabledReadSpiID;
-}
-/*
- * CSVFileWriter::setFileName
- */
-void CSVFileWriter::setEnabledReadSpiID(const bool value)
-{
-    if (value == m_enabledReadSpiID)
-        return;
-
-    m_enabledReadSpiID = value;
-    qDebug() << "cpp: enabledReadSpiIDChanged changed:  " << m_enabledReadSpiID;
-
-    emit enabledReadSpiIDChanged();
-}
-/*
- * CSVFileWriter::getFileName
+ **** CSVFileWriter::getFileName
  */
 QString CSVFileWriter::getCodeSpiID()
 {
@@ -196,51 +340,7 @@ void CSVFileWriter::setCodeSpiID(const QString &value)
  *****************************************************************************/
 
 /******************************************************************************
- **** CSVFileWriter::isEnabledSpiRW
- */
-bool CSVFileWriter::isEnabledSpiRW()
-{
-    return m_enabledSpiRW;
-}
-/*
- * CSVFileWriter::setEnabledSpiRW
- */
-void CSVFileWriter::setEnabledSpiRW(const bool value)
-{
-    if (value == m_enabledSpiRW)
-        return;
-
-    m_enabledSpiRW = value;
-    qDebug() << "cpp: enabledSpiRW changed:  " << m_enabledSpiRW;
-
-    //emit enabledSpiRW();
-}
-/*
- * End COLLAUDO_FLASH_SPI_RW
- *****************************************************************************/
-
-/******************************************************************************
- **** CSVFileWriter::isEnabledReadSpiID
- */
-bool CSVFileWriter::isEnabledReadQSpiID()
-{
-    return m_enabledReadQSpiID;
-}
-/*
- * CSVFileWriter::setFileName
- */
-void CSVFileWriter::setEnabledReadQSpiID(const bool value)
-{
-    if (value == m_enabledReadQSpiID)
-        return;
-
-    m_enabledReadQSpiID = value;
-    qDebug() << "cpp: enabledReadQSpiIDChanged changed:  " << m_enabledReadQSpiID;
-
-    emit enabledReadQSpiIDChanged();
-}
-/*
- * CSVFileWriter::getFileName
+ **** CSVFileWriter::getFileName
  */
 QString CSVFileWriter::getCodeQSpiID()
 {
@@ -261,165 +361,7 @@ void CSVFileWriter::setCodeQSpiID(const QString &value)
  *****************************************************************************/
 
 /******************************************************************************
- **** CSVFileWriter::isEnabledQSpiRW
- */
-bool CSVFileWriter::isEnabledQSpiRW()
-{
-    return m_enabledQSpiRW;
-}
-/*
- * CSVFileWriter::setEnabledQSpiRW
- */
-void CSVFileWriter::setEnabledQSpiRW(const bool value)
-{
-    if (value == m_enabledQSpiRW)
-        return;
-    m_enabledQSpiRW = value;
-
-    qDebug() << "cpp: enabledQSpiRW changed:  " << m_enabledQSpiRW;
-    //emit enabledQSpiRW();
-}
-/*
- * End COLLAUDO_FLASH_QSPI_RW
- *****************************************************************************/
-
-/******************************************************************************
- **** CSVFileWriter::isEnabledDisplay
- */
-bool CSVFileWriter::isEnabledDisplay()
-{
-    return m_enabledDisplay;
-}
-/*
- * CSVFileWriter::setEnabledDisplay
- */
-void CSVFileWriter::setEnabledDisplay(const bool value)
-{
-    if (value == m_enabledDisplay)
-        return;
-    m_enabledDisplay = value;
-
-    qDebug() << "cpp: enabledDisplayChanged changed:  " << m_enabledDisplay;
-    //emit enabledDisplayChanged();
-}
-/*
- * End COLLAUDO_DISPLAY_TOUCH
- *****************************************************************************/
-
-/******************************************************************************
- **** CSVFileWriter::isEnabledBacklight
- */
-bool CSVFileWriter::isEnabledBacklight()
-{
-    return m_enabledBacklight;
-}
-/*
- * CSVFileWriter::setEnabledBacklight
- */
-void CSVFileWriter::setEnabledBacklight(const bool value)
-{
-    if (value == m_enabledBacklight)
-        return;
-    m_enabledBacklight = value;
-
-    qDebug() << "cpp: enabledBacklightChanged changed:  " << m_enabledBacklight;
-    //emit enabledBacklightChanged();
-}
-/*
- * End COLLAUDO_BACKLIGHT
- *****************************************************************************/
-
-/******************************************************************************
- **** CSVFileWriter::isEnabledBuzzEst
- */
-bool CSVFileWriter::isEnabledBuzzEst()
-{
-    return m_enabledBuzzEst;
-}
-/*
- * CSVFileWriter::setEnabledBuzzEst
- */
-void CSVFileWriter::setEnabledBuzzEst(const bool value)
-{
-    if (value == m_enabledBuzzEst)
-        return;
-    m_enabledBuzzEst = value;
-
-    qDebug() << "cpp: setEnabledBuzzEst changed:  " << m_enabledBuzzEst;
-    emit enabledBuzzEstChanged();
-}
-/*
- * End COLLAUDO_BUZZER_ESTERNO
- *****************************************************************************/
-
-/******************************************************************************
- **** CSVFileWriter::isEnabledBuzzInt
- */
-bool CSVFileWriter::isEnabledBuzzInt()
-{
-    return m_enabledBuzzInt;
-}
-/*
- * CSVFileWriter::setEnabledBuzzInt
- */
-void CSVFileWriter::setEnabledBuzzInt(const bool value)
-{
-    if (value == m_enabledBuzzInt)
-        return;
-    m_enabledBuzzInt = value;
-
-    qDebug() << "cpp: enabledBuzzIntChanged changed:  " << m_enabledBuzzInt;
-    emit enabledBuzzIntChanged();
-}
-/*
- * End COLLAUDO_BUZZER_INTERNO
- *****************************************************************************/
-
-/******************************************************************************
- **** CSVFileWriter::isEnabledEncoder
- */
-bool CSVFileWriter::isEnabledEncoder()
-{
-    return m_enabledEncoder;
-}
-/*
- * CSVFileWriter::setEnabledEncoder
- */
-void CSVFileWriter::setEnabledEncoder(const bool value)
-{
-    if (value == m_enabledEncoder)
-        return;
-    m_enabledEncoder = value;
-
-    qDebug() << "cpp: enabledEncoderChanged changed:  " << m_enabledEncoder;
-    emit enabledEncoderChanged();
-}
-/*
- * End COLLAUDO_ENCODER
- *****************************************************************************/
-
-/******************************************************************************
- **** CSVFileWriter::isEnabledDipSwitch
- */
-bool CSVFileWriter::isEnabledDipSwitch()
-{
-    return m_enabledDipSwitch;
-}
-/*
- * CSVFileWriter::setEnabledDipSwitch
- */
-void CSVFileWriter::setEnabledDipSwitch(const bool value)
-{
-    if (value == m_enabledDipSwitch)
-        return;
-    m_enabledDipSwitch = value;
-
-    qDebug() << "cpp: enabledDipSwitchChanged changed:  " << m_enabledDipSwitch;
-    //emit enabledDipSwitchChanged();
-}
-
-/*
- * CSVFileWriter::getMaskDipSwitch
+ **** CSVFileWriter::getMaskDipSwitch
  */
 QString CSVFileWriter::getMaskDipSwitch()
 {
@@ -442,27 +384,7 @@ void CSVFileWriter::setMaskDipSwitch(const QString &value)
  *****************************************************************************/
 
 /******************************************************************************
- **** CSVFileWriter::isEnabledCpu
- */
-bool CSVFileWriter::isEnabledCpu()
-{
-    return m_enabledCpu;
-}
-/*
- * CSVFileWriter::setEnabledCpu
- */
-void CSVFileWriter::setEnabledCpu(const bool value)
-{
-    if (value == m_enabledCpu)
-        return;
-    m_enabledCpu = value;
-
-    qDebug() << "cpp: enabledCpuChanged changed:  " << m_enabledCpu;
-    emit enabledCpuChanged();
-}
-
-/*
- * CSVFileWriter::getMaskCpu
+ **** CSVFileWriter::getMaskCpu
  */
 QString CSVFileWriter::getMaskCpu()
 {
@@ -485,27 +407,7 @@ void CSVFileWriter::setMaskCpu(const QString &value)
  *****************************************************************************/
 
 /******************************************************************************
- **** CSVFileWriter::isEnabledFlash
- */
-bool CSVFileWriter::isEnabledFlash()
-{
-    return m_enabledFlash;
-}
-/*
- * CSVFileWriter::setEnabledFlash
- */
-void CSVFileWriter::setEnabledFlash(const bool value)
-{
-    if (value == m_enabledFlash)
-        return;
-    m_enabledFlash = value;
-
-    qDebug() << "cpp: enabledFlashChanged changed:  " << m_enabledFlash;
-    emit enabledFlashChanged();
-}
-
-/*
- * CSVFileWriter::getMaskCpu
+ **** CSVFileWriter::getMaskCpu
  */
 QString CSVFileWriter::getMaskFlash()
 {
@@ -520,7 +422,7 @@ void CSVFileWriter::setMaskFlash(const QString &value)
     QStringList list1 = value.split(QLatin1Char(':'));
     qDebug() << "cpp: setMaskFlash changed:  " << value << " 0: " << list1[0] << " 1: " << list1[1];
     m_maskFlash[ list1[0].toInt() ] = list1[1];
-    emit maskFlashChanged();
+    //emit maskFlashChanged();
 }
 
 /*
@@ -528,73 +430,7 @@ void CSVFileWriter::setMaskFlash(const QString &value)
  *****************************************************************************/
 
 /******************************************************************************
- **** CSVFileWriter::isEnabledSD
- */
-bool CSVFileWriter::isEnabledSD()
-{
-    return m_enabledSD;
-}
-/*
- * CSVFileWriter::setEnabledSD
- */
-void CSVFileWriter::setEnabledSD(const bool value)
-{
-    if (value == m_enabledSD)
-        return;
-    m_enabledSD = value;
-
-    qDebug() << "cpp: enabledSDChanged changed:  " << m_enabledSD;
-    emit enabledSDChanged();
-}
-/*
- * End COLLAUDO_SD
- *****************************************************************************/
-
-/******************************************************************************
- **** CSVFileWriter::isEnabledETH
- */
-bool CSVFileWriter::isEnabledETH()
-{
-    return m_enabledETH;
-}
-/*
- * CSVFileWriter::setEnabledETH
- */
-void CSVFileWriter::setEnabledETH(const bool value)
-{
-    if (value == m_enabledETH)
-        return;
-    m_enabledETH = value;
-
-    qDebug() << "cpp: enabledETHChanged changed:  " << m_enabledETH;
-    emit enabledETHChanged();
-}
-/*
- * End COLLAUDO_ETHERNET
- *****************************************************************************/
-
-/******************************************************************************
- **** CSVFileWriter::isEnabledWifi
- */
-bool CSVFileWriter::isEnabledWifi()
-{
-    return m_enabledWifi;
-}
-/*
- * CSVFileWriter::setEnabledWifi
- */
-void CSVFileWriter::setEnabledWifi(const bool value)
-{
-    if (value == m_enabledWifi)
-        return;
-
-    m_enabledWifi = value;
-    qDebug() << "cpp: enabledWifiChanged changed:  " << m_enabledWifi;
-
-    emit enabledWifiChanged();
-}
-/*
- * CSVFileWriter::getWifiData
+ **** CSVFileWriter::getWifiData
  */
 QString CSVFileWriter::getWifiData()
 {
@@ -608,262 +444,9 @@ void CSVFileWriter::setWifiData(const QString &value)
     QStringList list1 = value.split(QLatin1Char(':'));
     qDebug() << "cpp: wifiDataChanged changed:  " << value << " 0: " << list1[0] << " 1: " << list1[1];
     m_wifiData[ list1[0].toInt() ] = list1[1];
-    emit wifiDataChanged();
+    //emit wifiDataChanged();
 }
 /*
  * End COLLAUDO_FLASH_QSPI_RID
- *****************************************************************************/
-
-/******************************************************************************
- **** CSVFileWriter::isEnabledModBus
- */
-bool CSVFileWriter::isEnabledModBus()
-{
-    return m_enabledModBus;
-}
-/*
- * CSVFileWriter::setEnabledModBus
- */
-void CSVFileWriter::setEnabledModBus(const bool value)
-{
-    if (value == m_enabledModBus)
-        return;
-    m_enabledModBus = value;
-
-    qDebug() << "cpp: enabledModBusChanged changed:  " << m_enabledModBus;
-    emit enabledModBusChanged();
-}
-/*
- * End COLLAUDO_MODBUS
- *****************************************************************************/
-
-/******************************************************************************
- **** CSVFileWriter::isEnabledModBus2
- */
-bool CSVFileWriter::isEnabledModBus2()
-{
-    return m_enabledModBus2;
-}
-/*
- * CSVFileWriter::setEnabledModBus2
- */
-void CSVFileWriter::setEnabledModBus2(const bool value)
-{
-    if (value == m_enabledModBus2)
-        return;
-    m_enabledModBus2 = value;
-
-    qDebug() << "cpp: enabledModBus2Changed changed:  " << m_enabledModBus2;
-    emit enabledModBus2Changed();
-}
-/*
- * End COLLAUDO_MODBUS2
- *****************************************************************************/
-
-/******************************************************************************
- **** CSVFileWriter::isEnabledCanBus
- */
-bool CSVFileWriter::isEnabledCanBus()
-{
-    return m_enabledCanBus;
-}
-/*
- * CSVFileWriter::setEnabledCanBus
- */
-void CSVFileWriter::setEnabledCanBus(const bool value)
-{
-    if (value == m_enabledCanBus)
-        return;
-    m_enabledCanBus = value;
-
-    qDebug() << "cpp: enabledCanBusChanged changed:  " << m_enabledCanBus;
-    emit enabledCanBusChanged();
-}
-/*
- * End COLLAUDO_CAN
- *****************************************************************************/
-
-/******************************************************************************
- **** CSVFileWriter::isEnabledEcsBus
- */
-bool CSVFileWriter::isEnabledEcsBus()
-{
-    return m_enabledEcsBus;
-}
-/*
- * CSVFileWriter::setEnabledEcsBus
- */
-void CSVFileWriter::setEnabledEcsBus(const bool value)
-{
-    if (value == m_enabledEcsBus)
-        return;
-    m_enabledEcsBus = value;
-
-    qDebug() << "cpp: enabledEcsBusChanged changed:  " << m_enabledEcsBus;
-    emit enabledEcsBusChanged();
-}
-/*
- * End COLLAUDO_ECSBUS
- *****************************************************************************/
-
-/******************************************************************************
- **** CSVFileWriter::isEnabledNtc
- */
-bool CSVFileWriter::isEnabledNtc()
-{
-    return m_enabledNtc;
-}
-/*
- * CSVFileWriter::setEnabledNtc
- */
-void CSVFileWriter::setEnabledNtc(const bool value)
-{
-    if (value == m_enabledNtc)
-        return;
-    m_enabledNtc = value;
-
-    qDebug() << "cpp: enabledNtcChanged changed:  " << m_enabledNtc;
-    emit enabledNtcChanged();
-}
-/*
- * End COLLAUDO_NTC
- *****************************************************************************/
-
-/******************************************************************************
- **** CSVFileWriter::isEnabledAnalog
- */
-bool CSVFileWriter::isEnabledAnalog()
-{
-    return m_enabledAnalog;
-}
-/*
- * CSVFileWriter::setEnabledAnalog
- */
-void CSVFileWriter::setEnabledAnalog(const bool value)
-{
-    if (value == m_enabledAnalog)
-        return;
-    m_enabledAnalog = value;
-
-    qDebug() << "cpp: enabledAnalogChanged changed:  " << m_enabledAnalog;
-    emit enabledAnalogChanged();
-}
-/*
- * End COLLAUDO_ANALOGICHE
- *****************************************************************************/
-
-/******************************************************************************
- **** CSVFileWriter::isEnabledI2CEE
- */
-bool CSVFileWriter::isEnabledI2CEE()
-{
-    return m_enabledI2CEE;
-}
-/*
- * CSVFileWriter::setEnabledI2CEE
- */
-void CSVFileWriter::setEnabledI2CEE(const bool value)
-{
-    if (value == m_enabledI2CEE)
-        return;
-    m_enabledI2CEE = value;
-
-    qDebug() << "cpp: enabledI2CEEChanged changed:  " << m_enabledI2CEE;
-    emit enabledI2CEEChanged();
-}
-/*
- * End COLLAUDO_I2C_EEPROM
- *****************************************************************************/
-
-/******************************************************************************
- **** CSVFileWriter::isEnabledEthNtp
- */
-bool CSVFileWriter::isEnabledEthNtp()
-{
-    return m_enabledEthNtp;
-}
-/*
- * CSVFileWriter::setEnabledEthNtp
- */
-void CSVFileWriter::setEnabledEthNtp(const bool value)
-{
-    if (value == m_enabledEthNtp)
-        return;
-    m_enabledEthNtp = value;
-
-    qDebug() << "cpp: enabledEthNtpChanged changed:  " << m_enabledEthNtp;
-    emit enabledEthNtpChanged();
-}
-/*
- * End COLLAUDO_SET_DATE_FROM_NTP_ETH
- *****************************************************************************/
-
-/******************************************************************************
- **** CSVFileWriter::isEnabledEthMac
- */
-bool CSVFileWriter::isEnabledEthMac()
-{
-    return m_enabledEthMac;
-}
-/*
- * CSVFileWriter::setEnabledEthMac
- */
-void CSVFileWriter::setEnabledEthMac(const bool value)
-{
-    if (value == m_enabledEthMac)
-        return;
-    m_enabledEthMac = value;
-
-    qDebug() << "cpp: enabledEthMacChanged changed:  " << m_enabledEthMac;
-    emit enabledEthMacChanged();
-}
-/*
- * End COLLAUDO_WRITE_MAC
- *****************************************************************************/
-
-/******************************************************************************
- **** CSVFileWriter::isEnabledUsb
- */
-bool CSVFileWriter::isEnabledUsb()
-{
-    return m_enabledUsb;
-}
-/*
- * CSVFileWriter::setEnabledUsb
- */
-void CSVFileWriter::setEnabledUsb(const bool value)
-{
-    if (value == m_enabledUsb)
-        return;
-    m_enabledUsb = value;
-
-    qDebug() << "cpp: enabledUsbChanged changed:  " << m_enabledUsb;
-    emit enabledUsbChanged();
-}
-/*
- * End COLLAUDO_USB
- *****************************************************************************/
-
-/******************************************************************************
- **** CSVFileWriter::isEnabledFinalize
- */
-bool CSVFileWriter::isEnabledFinalize()
-{
-    return m_enabledFinalize;
-}
-/*
- * CSVFileWriter::setEnabledFinalize
- */
-void CSVFileWriter::setEnabledFinalize(const bool value)
-{
-    if (value == m_enabledFinalize)
-        return;
-    m_enabledFinalize = value;
-
-    qDebug() << "cpp: enabledFinalizeChanged changed:  " << m_enabledFinalize;
-    emit enabledFinalizeChanged();
-}
-/*
- * End COLLAUDO_FINALIZE
  *****************************************************************************/
 

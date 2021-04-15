@@ -18,41 +18,32 @@ Window {
 
     CSVFileWriter {
         id: csv
-        onEnabledReadSpiIDChanged: checkBoxSpiRID.checked = enabledReadSpiID ? Qt.Checked : Qt.Unchecked
-        onCodeSpiIDChanged: {
-            console.log("codeSpiIDChanged changed: ", codeSpiID)
-            var res = codeSpiID.split(",");
-            if(res[0])
-                textSPIFlashId0.text = res[0].trim()
-            if(res[1])
-                textSPIFlashId1.text = res[1].trim()
-            if(res[2])
-                textSPIFlashId2.text = res[2].trim()
-            if(res[3])
-                textSPIFlashId3.text = res[3].trim()
-            if(res[4])
-                textSPIFlashId4.text = res[4].trim()
-        }
-        onEnabledReadQSpiIDChanged: checkBoxQSpiRID.checked = enabledReadQSpiID ? Qt.Checked : Qt.Unchecked
-        onCodeQSpiIDChanged: {
-            console.log("codeSpiIDChanged changed: ", codeQSpiID)
-            var res = codeQSpiID.split(",");
-            if(res[0])
-                textQSPIFlashId0.text = res[0].trim()
-            if(res[1])
-                textQSPIFlashId1.text = res[1].trim()
-            if(res[2])
-                textQSPIFlashId2.text = res[2].trim()
-            if(res[3])
-                textQSPIFlashId3.text = res[3].trim()
-            if(res[4])
-                textQSPIFlashId4.text = res[4].trim()
-        }
-        onEnabledSpiRWChanged: checkBoxCollFlashSpiRW.checked = enabledSpiRW ? Qt.Checked : Qt.Unchecked
-        onEnabledQSpiRWChanged: checkBoxCollFlashQSpiRW.checked = enabledQSpiRW ? Qt.Checked : Qt.Unchecked
-
-        onEnabledDisplayChanged: checkBoxCollDisplayTouch.checked = enabledDisplay ? Qt.Checked : Qt.Unchecked
-        onEnabledBacklightChanged: checkBoxCollBacklight.checked = enabledBacklight ? Qt.Checked : Qt.Unchecked
+        onEnabledReadSpiIDChanged: checkBoxSpiRID.checked = value
+        onEnabledSpiRWChanged: checkBoxCollFlashSpiRW.checked = value
+        onEnabledReadQSpiIDChanged: checkBoxQSpiRID.checked = value
+        onEnabledQSpiRWChanged: checkBoxCollFlashQSpiRW.checked = value
+        onEnabledDisplayChanged: checkBoxCollDisplayTouch.checked = value
+        onEnabledBacklightChanged: checkBoxCollBacklight.checked = value
+        onEnabledBuzzEstChanged: checkBoxCollBuzzerEsterno.checked = value
+        onEnabledBuzzIntChanged: checkBoxCollBuzzerInterno.checked = value
+        onEnabledEncoderChanged: checkBoxCollEncoder.checked = value
+        onEnabledDipSwitchChanged: checkBoxDipSwitch.checked = value
+        onEnabledCpuChanged: checkBoxCPU.checked = value
+        onEnabledFlashChanged: checkBoxFlash.checked = value
+        onEnabledSDChanged: checkBoxCollSD.checked = value
+        onEnabledETHChanged:checkBoxCollEthernet.checked = value
+        onEnabledWifiChanged:checkBoxWifi.checked = value
+        onEnabledModBusChanged: checkBoxCollModbus.checked = value
+        onEnabledModBus2Changed: checkBoxCollModbus2.checked = value
+        onEnabledCanBusChanged: checkBoxCollCan.checked = value
+        onEnabledEcsBusChanged: checkBoxCollECSBus.checked = value
+        onEnabledNtcChanged: checkBoxCollNtc.checked = value
+        onEnabledAnalogChanged: checkBoxCollAnalogiche.checked = value
+        onEnabledI2CEEChanged: checkBoxCollI2CEEprom.checked = value
+        onEnabledEthNtpChanged: checkBoxCollNtpEth.checked = value
+        onEnabledEthMacChanged: checkBoxCollWriteMac.checked = value
+        onEnabledUsbChanged: checkBoxCollUsb.checked = value
+        onEnabledFinalizeChanged: checkBoxFinalize.checked = value
     }
 
     Rectangle {
